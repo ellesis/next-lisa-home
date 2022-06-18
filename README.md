@@ -1,14 +1,77 @@
 # Next Lisa's Home
 
-"export": "next export"
+next + github pages action deploy
 
-Add file
-/public/.nojekyll
+1. Make next.js project
+   This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+2. change package.json - export and make .nojekyll file
 
-or
-"export": "next export && touch out/.nojekyll"
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export && touch out/.nojekyll",
+    "lint": "next lint"
+  }
+}
+```
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+3.  make /.github/workflows/node.js.yml
+
+```yml
+name: Node.js CI
+
+on:
+  push:
+    branches: ['master']
+  pull_request:
+    branches: ['master']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - run: npm run export
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: out # The folder the action should deploy.
+```
+
+4.  next.config.js 파일 수정
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    loader: 'akamai',
+    path: ''
+  },
+  basePath: '/next-lisa-home',
+  assetPrefix: '/next-lisa-home'
+}
+
+module.exports = nextConfig
+```
 
 ## Getting Started
 
