@@ -4,9 +4,9 @@ const nextConfig = {
   images: {
     loader: 'akamai',
     path: ''
-  },
-  basePath: '/next-lisa-home',
-  assetPrefix: '/next-lisa-home'
+  }
+  // basePath: '/next-lisa-home',
+  // assetPrefix: '/next-lisa-home'
 }
 
 module.exports = nextConfig
